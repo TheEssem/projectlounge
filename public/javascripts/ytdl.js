@@ -64,7 +64,6 @@ function getInfo() {
       videoLinks.filter((item, pos, self) => {
         return self.indexOf(item) == pos;
       }).forEach((value) => {
-        var videoEntry = document.createElement("li");
         var videoLink = document.createElement("a");
         videoLink.classList.add("btn");
         videoLink.classList.add("btn-primary");
@@ -75,8 +74,7 @@ function getInfo() {
         var linkAudioValue = value.acodec === "none" && value.asr === null ? `${linkResValue} (no audio)` : linkResValue;
         var linkValue = `${linkAudioValue} (Format: ${value.format_id})`;
         videoLink.innerHTML = linkValue;
-        videoEntry.appendChild(videoLink);
-        videoLinkContainer.appendChild(videoEntry);
+        videoLinkContainer.appendChild(videoLink);
       });
       links.appendChild(videoLinkContainer);
       links.appendChild(document.createElement("br"));
@@ -88,7 +86,6 @@ function getInfo() {
       audioLinkTitle.classList.add("h3");
       audioLinkContainer.appendChild(audioLinkTitle);
       audioLinks.forEach((value) => {
-        var audioEntry = document.createElement("li");
         var audioLink = document.createElement("a");
         audioLink.classList.add("btn");
         audioLink.classList.add("btn-primary");
@@ -96,8 +93,7 @@ function getInfo() {
         audioLink.classList.add("btn-block");
         audioLink.href = `/ytdl/download?url=${link.value}&format=${value.format_id}`;
         audioLink.innerHTML = `${value.asr} Hz (Bitrate: ${value.abr} kbps) (${value.ext}) (Format: ${value.format_id})`;
-        audioEntry.appendChild(audioLink);
-        audioLinkContainer.appendChild(audioEntry);
+        audioLinkContainer.appendChild(audioLink);
       });
       links.appendChild(audioLinkContainer);
       links.appendChild(document.createElement("br"));
@@ -109,7 +105,6 @@ function getInfo() {
       miscLinkTitle.classList.add("h3");
       miscLinkContainer.appendChild(miscLinkTitle);
       miscLinks.forEach((value) => {
-        var miscEntry = document.createElement("li");
         var miscLink = document.createElement("a");
         miscLink.classList.add("btn");
         miscLink.classList.add("btn-primary");
@@ -117,8 +112,7 @@ function getInfo() {
         miscLink.classList.add("btn-block");
         miscLink.href = `/ytdl/download?url=${link.value}&format=${value.format_id}`;
         miscLink.innerHTML = value.format;
-        miscEntry.appendChild(miscLink);
-        miscLinkContainer.appendChild(miscEntry);
+        miscLinkContainer.appendChild(miscLink);
       });
       links.appendChild(miscLinkContainer);
 
