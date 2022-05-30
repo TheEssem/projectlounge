@@ -17,6 +17,7 @@ function getInfo() {
   links.innerHTML = "";
   statusOutput.innerHTML = "Loading info...";
   window.fetch(`/ytdl/info?url=${link.value}`).then(info => info.json()).then(json => {
+    if (json.extractError) throw json.extractError;
     var image = document.createElement("img");
     var title = document.createElement("p");
     var imageLink = document.createElement("a");
@@ -120,11 +121,11 @@ function getInfo() {
       statusOutput.innerHTML = "";
     }
   }).catch(error => {
-    console.log(error.message);
-    if (error.message === "JSON.parse: unexpected end of data at line 1 column 1 of the JSON data") {
+    console.log(error);
+    if (error.type === "ytdlerror") {
       statusOutput.innerHTML = "Video not found";
     } else {
-      statusOutput.innerHTML = `Error:${error}`;
+      statusOutput.innerHTML = `Error: ${error.message ? error.message : error}`;
     }
   });
 }

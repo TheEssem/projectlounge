@@ -75,8 +75,14 @@ router.get("/info", async function(req, res, next) {
       res.status(400);
       return next(error);
     }
-    const info = await ytdl.extract_info$(req.query.url, {download: false}).then(info => info.valueOf());
-    res.send(info);
+    try {
+      const info = await ytdl.extract_info$(req.query.url, {download: false}).then(info => info.valueOf());
+      res.send(info);
+    } catch (e) {
+      res.status(400);
+      console.error(e.stack);
+      res.send({ extractError: { type: "ytdlerror", message: e.stack } });
+    }
   }
 });
 
