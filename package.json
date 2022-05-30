@@ -1,0 +1,28 @@
+{
+  "name": "utils",
+  "version": "0.0.0",
+  "scripts": {
+    "start": "node ./bin/www.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "debug": "^4.3.4",
+    "express": "~4.16.1",
+    "file-type": "^17.1.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "helmet": "^3.22.0",
+    "http-errors": "~1.6.3",
+    "morgan": "~1.9.1",
+    "multer": "^1.4.2",
+    "node-fetch": "^3.2.4",
+    "pythonia": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.13.8",
+    "@babel/eslint-plugin": "^7.13.0",
+    "eslint": "^8.2.0",
+    "eslint-plugin-unicorn": "^41.0.0",
+    "prettier": "^2.6.2",
+    "prettier-eslint": "^14.0.2"
+  }
+}

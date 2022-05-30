@@ -1,0 +1,7 @@
+node_modules/
+*.pem
+*.code-workspace
+quotes.json
+messages.json
+ecosystem.config.js
+.vscode/

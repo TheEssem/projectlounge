@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>this_vid2: Web Edition</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <meta property="og:type" content="article">
+  <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" />
+  <meta property="og:title" content="this_vid2: Web Edition" />
+  <meta property="og:description" content="Downloaded using this_vid2." />
+  <meta property="og:image" content="https://projectlounge.pw/pictures/this_vid2.png" />
+</head>
+
+<body>
+  <div class="container"><iframe id="frame" style="display:none;"></iframe>
+    <div class="jumbotron">
+      <h1><img class="d-inline" src="/pictures/this_vid2.png" height="64" /> this_vid2: Web Edition</h1>
+      <p>This is a simple web interface for generating videos like the ones by <a
+          href="https://github.com/TheEssem/this_vid2">this_vid2</a> and its derivatives. Just upload a valid video file and
+        we'll try to generate a crisp, HD-quality video for you.</p>
+      <p>Max file upload limit is 25MB. Check out <a href="/ytdl">yt-dlp</a> for
+        downloading actual videos.</p>
+      <form>
+        <div class="form-group"><input class="form-control-file" type="file" name="video" accept="video/*" id="video"
+            onchange="uploadFile(event)" /></div>
+        <p>or</p>
+        <div class="form-inline">
+          <div class="form-group mr-3"><input class="form-control" type="text" name="link" id="link"
+              placeholder="Video URL" /></div><button class="btn btn-primary" type="button"
+            onclick="uploadExtVideo()">Submit</button>
+        </div>
+      </form><br />
+      <div class="lead" id="status"></div>
+    </div>
+    <span>©<script type="text/javascript">document.write( new Date().getFullYear() );</script> <a href="https://essem.space">Essem</a></span>
+  </div>
+  <script src="/javascripts/thisvid2.js"></script>
+</body>
+
+</html>
