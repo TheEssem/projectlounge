@@ -26,14 +26,18 @@ async function getVid(req, buffer) {
     });
     format = formats[formats.length - 1];
   }
+  if (!format.filesize) {
+    const head = await fetch(format.url, { headers: format.http_headers, method: "HEAD" });
+    format.filesize = head.headers.get("Content-Length");
+  }
   const data = await fetch(format.url, { headers: format.http_headers });
   if (buffer) {
     const buffer = await data.arrayBuffer();
     const fileType = await fileTypeFromBuffer(buffer);
-    return { info, buffer: Buffer.from(buffer), fileType };
+    return { info, buffer: Buffer.from(buffer), fileType, format };
   } else {
     const typeStream = await fileTypeStream(data.body);
-    return { info, typeStream, fileType: typeStream.fileType };
+    return { info, typeStream, fileType: typeStream.fileType, format };
   }
 }
 
@@ -53,7 +57,7 @@ router.get("/download", async function(req, res, next) {
     try {
       const out = await getVid(req);
       const ext = out.typeStream.fileType ? out.typeStream.fileType.ext : "mp4";
-      res.attachment(`${out.info.title}.${ext}`).type(ext);
+      res.attachment(`${out.info.title}.${ext}`).type(ext).set("Content-Length", out.format.filesize);
       out.typeStream.pipe(res);
     } catch (error) {
       res.status(500);
