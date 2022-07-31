@@ -7,13 +7,14 @@ import path from "path";
 import url from "url";
 import fetch from "node-fetch";
 
-const ytdl = await python("yt_dlp").then(mod => mod.YoutubeDL({}));
+const ytdlp = await python("yt_dlp");
 
 router.get("/", function(req, res) {
   res.sendFile(join(`${path.dirname(url.fileURLToPath(import.meta.url))}/../views/ytdl.html`));
 });
 
 async function getVid(req, buffer) {
+  const ytdl = await ytdlp.YoutubeDL({});
   const info = await ytdl.extract_info$(req.query.url, {download: false}).then(info => info.valueOf());
   let format;
   if (req.query.format) {
@@ -80,6 +81,7 @@ router.get("/info", async function(req, res, next) {
       return next(error);
     }
     try {
+      const ytdl = await ytdlp.YoutubeDL({});
       const info = await ytdl.extract_info$(req.query.url, {download: false}).then(info => info.valueOf());
       res.send(info);
     } catch (e) {
