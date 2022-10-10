@@ -3,12 +3,10 @@ import express, { json, urlencoded } from "express";
 import { join } from "path";
 import logger from "morgan";
 import helmet from "helmet";
-import serveIndex from "serve-index";
 
 import path from "path";
 import url from "url";
 
-import config from "./config.js";
 import thisvid2Router from "./routes/this_vid2.js";
 import ytdlRouter from "./routes/ytdl.js";
 import catRouter from "./routes/cta.js";
@@ -31,9 +29,6 @@ app.use(
     join(path.dirname(url.fileURLToPath(import.meta.url)), "public")
   )
 );
-
-app.use("/ctafiles/", express.static(config.catDir), serveIndex(config.catDir, { template: "views/files.html" }));
-app.use("/memefiles/", express.static(config.memeDir), serveIndex(config.memeDir, { template: "views/files.html" }));
 
 app.use("/thisvid2", thisvid2Router);
 app.use("/ytdl", ytdlRouter);
