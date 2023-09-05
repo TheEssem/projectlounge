@@ -62,7 +62,7 @@ router.get("/uploadytdl", async function(req, res, next) {
 
 router.post("/upload", upload.single("video"), async function(req, res) {
   try {
-    const type = fileTypeFromFile(req.file.path);
+    const type = await fileTypeFromFile(req.file.path);
     if (!type.mime.includes("video")) {
       res.status(400);
       return res.json({
