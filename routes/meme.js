@@ -11,6 +11,6 @@ router.get("/", function(req, res) {
   res.redirect(302, `/meme/files/${files[Math.floor(Math.random() * files.length)]}`);
 });
 
-router.use("/files", expStatic(config.catDir), serveIndex(config.memeDir, { template: "views/files.html" }));
+router.use("/files", expStatic(config.memeDir), serveIndex(config.memeDir, { template: "views/files.html" }));
 
 export default router;
