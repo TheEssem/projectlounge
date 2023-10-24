@@ -11,7 +11,6 @@ var storage = diskStorage({
   },
 });
 import generateVideo from "../generateVideo.js";
-import { getVid } from "./ytdl.js";
 import { fileTypeFromFile } from "file-type";
 var upload = multer({ storage: storage });
 var router = Router();
@@ -21,43 +20,6 @@ var outMap = new Map();
 router.get("/", function(req, res) {
   res.sendFile(join(`${dirname(url.fileURLToPath(import.meta.url))}/../views/this_vid2.html`));
   //res.render("this_vid2", { title: "this_vid2: Web Edition" });
-});
-
-router.get("/uploadytdl", async function(req, res, next) {
-  if (!req.query.url) {
-    const error = new Error("Bad Request");
-    res.status(400);
-    return next(error);
-  } else {
-    try {
-      new URL(req.query.url);
-    } catch {
-      const error = new Error("Bad Request");
-      res.status(400);
-      return next(error);
-    }
-    try {
-      const out = await getVid(req, true);
-      if (!out.fileType.mime.includes("video")) {
-        res.status(400);
-        return res.json({
-          data: null,
-          error: "The uploaded file is not a video.",
-        });
-      }
-      var id = Math.random().toString(36).substring(2, 15);
-      var stream = await generateVideo({ buffer: out.buffer });
-      outMap.set(id, stream);
-      res.json({
-        data: `/thisvid2/video/${id}`,
-        error: null,
-      });
-    } catch (err) {
-      console.error(err);
-      res.status(500);
-      return res.json({ data: null, error: err });
-    }
-  }
 });
 
 router.post("/upload", upload.single("video"), async function(req, res) {

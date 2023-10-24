@@ -30,25 +30,3 @@ function uploadFile(event) {
   var file = input.files[0];
   upload(file);
 }
-
-function uploadExtVideo() {
-  var url = document.getElementById("link").value;
-  if (!url) return;
-  if (!isValidURL(url)) return statusElement.innerHTML = "That isn't a valid URL!";
-  statusElement.innerHTML = "Processing...";
-  window.fetch(`/thisvid2/uploadytdl?url=${url}`).then(res => {
-    return res.json();
-  }).then(json => {
-    if (json.error) return statusElement.innerHTML = `There was an error while generating the video: ${json.error}`;
-    statusElement.innerHTML = "Downloading...";
-    document.getElementById("frame").src = json.data;
-  }).catch(error => {
-    console.error(error);
-  });
-}
-
-function isValidURL(str) {
-  var a = document.createElement("a");
-  a.href = str;
-  return (a.host && a.host != window.location.host);
-}

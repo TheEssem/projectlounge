@@ -16,26 +16,13 @@
   <div class="container">
     <div class="jumbotron">
       <h1>youtube-dl Web Interface</h1>
-      <p>This is a simple web frontend for <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a>, a command-line based video
-        downloader application forked from <a href="https://ytdl-org.github.io/youtube-dl">youtube-dl</a> that can download from <a href="https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md">thousands of websites</a> including YouTube,
-        Twitter, Reddit, TikTok, and many others.</p>
-      <p>An <a href="https://www.icloud.com/shortcuts/dc312040aee44f23af87d99cbc6629c4">iOS shortcut</a> is also available to access this interface at any time.</p>
-      <div id="form">
-        <div class="form-group"><input class="form-control" type="text" name="url" required="required" id="link" />
-        </div><button class="btn btn-primary btn-lg btn-block" type="button"
-          id="downloadButton">Download</button><button class="btn btn-primary btn-lg btn-block" type="button"
-          id="infoButton">Get Info/More Download Options</button>
-      </div><br />
-      <div class="lead" id="status"></div>
-      <div class="row" id="results">
-        <div class="col-md-3" id="info"></div>
-        <div class="col-md-3" id="empty"></div>
-        <ul class="col-md" id="links"></ul>
-      </div>
+      <p>After around 3.5 years of running this interface, I've decided to shut it down.
+        This was done for a few reasons; the server-side code was a mess and difficult to manage, it was difficult to keep up with youtube-dl (and later yt-dlp) updates, there was a good amount of people abusing the frontend, it was constantly blocked by major services (largely due to said abuse), and better solutions have been made available since I started running this.</p>
+      <p>The iOS shortcut is no longer available. For your web-based downloading needs, I recommend <a href="https://cobalt.tools">cobalt</a>; it has a simple/clean interface, supports downloading from nearly all of the major platforms, has all sorts of options, and <a href="https://github.com/wukko/cobalt/blob/current/docs/API.md">even has an API</a>. Consider it as a sort of spiritual successor. (Using <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> itself from the console isn't a bad idea either.)</p>
+      <p>Thank you to those who used this interface over the years. ❤️</p>
+      <p>- <a href="https://essem.space">Essem</a></p>
     </div>
-    <span>©<script type="text/javascript">document.write( new Date().getFullYear() );</script> <a href="https://essem.space">Essem</a></span>
   </div>
-  <script src="/javascripts/ytdl.js"></script>
 </body>
 
 </html>
