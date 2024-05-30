@@ -1,18 +1,19 @@
 import createError from "http-errors";
 import express, { json, urlencoded } from "express";
-import { join } from "path";
+import { join } from "node:path";
 import logger from "morgan";
 import helmet from "helmet";
 
-import path from "path";
-import url from "url";
+import path from "node:path";
+import url from "node:url";
+
+import config from "./config.js";
 
 import thisvid2Router from "./routes/this_vid2.js";
 import ytdlRouter from "./routes/ytdl.js";
-import catRouter from "./routes/cta.js";
-import memeRouter from "./routes/meme.js";
+import fileRouter from "./routes/fileRouter.js";
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set(
@@ -32,8 +33,9 @@ app.use(
 
 app.use("/thisvid2", thisvid2Router);
 app.use("/ytdl", ytdlRouter);
-app.use("/cta", catRouter);
-app.use("/meme", memeRouter);
+app.use("/cta", fileRouter("cta", config.catDir));
+app.use("/meme", fileRouter("meme", config.memeDir));
+app.use("/bird", fileRouter("bird", config.birdDir));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

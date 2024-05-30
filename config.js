@@ -1,4 +1,5 @@
 export default {
   catDir: "~/cats",
-  memeDir: "~/memes"
+  memeDir: "~/memes",
+  birdDir: "~/birds"
 };
