@@ -10,7 +10,6 @@ import url from "node:url";
 import config from "./config.js";
 
 import thisvid2Router from "./routes/this_vid2.js";
-import ytdlRouter from "./routes/ytdl.js";
 import fileRouter from "./routes/fileRouter.js";
 
 const app = express();
@@ -32,7 +31,6 @@ app.use(
 );
 
 app.use("/thisvid2", thisvid2Router);
-app.use("/ytdl", ytdlRouter);
 app.use("/cta", fileRouter("cta", config.catDir));
 app.use("/meme", fileRouter("meme", config.memeDir));
 app.use("/bird", fileRouter("bird", config.birdDir));
