@@ -1,16 +1,33 @@
-import { Router, static as expStatic } from "express";
-import serveIndex from "serve-index";
 import { readdirSync } from "node:fs";
+import fastifyStatic from "@fastify/static";
 
-export default function(name, dirName) {
-  const dir = readdirSync(dirName);
+/**
+ * @param {import("fastify").FastifyInstance} fastify
+ */
+export default async function(fastify, options) {
+  const dir = readdirSync(options.dirName);
   const files = dir.filter((e) => e.match(/.*\.(png|gif|jpg|jpeg|webp)/ig));
-  const router = Router();
 
-  router.get("/", (req, res) => {
-    res.redirect(302, `/${name}/files/${files[Math.floor(Math.random() * files.length)]}`);
+  fastify.get("/", (req, res) => {
+    res.redirect(`${options.prefix}/files/${files[Math.floor(Math.random() * files.length)]}`, 302);
   });
-  
-  router.use("/files", expStatic(dirName), serveIndex(dirName, { template: "views/files.html" }));
-  return router;
+
+  fastify.register(fastifyStatic, {
+    root: options.dirName,
+    list: {
+      format: "html",
+      render: (_, files) => {
+        return `
+<html><body>
+<ul>
+  ${files.map(file => `<li><a href="${options.prefix}${file.href}" target="_blank">${file.name}</a></li>`).join("\n  ")}
+</ul>
+</body></html>
+`;
+      }
+    },
+    index: false,
+    redirect: true,
+    prefix: "/files"
+  });
 }

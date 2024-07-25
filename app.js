@@ -1,10 +1,9 @@
-import createError from "http-errors";
-import express, { json, urlencoded } from "express";
-import { join } from "node:path";
-import logger from "morgan";
-import helmet from "helmet";
+import Fastify from "fastify";
+import fastifyStatic from "@fastify/static";
+import helmet from "@fastify/helmet";
+import fastifyMultipart from "@fastify/multipart";
 
-import path from "node:path";
+import { join, dirname } from "node:path";
 import url from "node:url";
 
 import config from "./config.js";
@@ -12,43 +11,59 @@ import config from "./config.js";
 import thisvid2Router from "./routes/this_vid2.js";
 import fileRouter from "./routes/fileRouter.js";
 
-const app = express();
+const app = Fastify({
+  logger: true
+});
 
-// view engine setup
-app.set(
-  "views",
-  join(path.dirname(url.fileURLToPath(import.meta.url)), "views")
-);
+app.register(helmet, { contentSecurityPolicy: false });
+app.register(fastifyStatic, {
+  root: join(dirname(url.fileURLToPath(import.meta.url)), "public")
+});
+app.register(fastifyMultipart, {
+  limits: {
+    files: 1,
+    fileSize: 26214400
+  }
+});
 
-app.use(logger("dev"));
-app.use(json());
-app.use(urlencoded({ extended: false }));
-app.use(helmet());
-app.use(
-  express.static(
-    join(path.dirname(url.fileURLToPath(import.meta.url)), "public")
-  )
-);
-
-app.use("/thisvid2", thisvid2Router);
-app.use("/cta", fileRouter("cta", config.catDir));
-app.use("/meme", fileRouter("meme", config.memeDir));
-app.use("/bird", fileRouter("bird", config.birdDir));
+app.register(thisvid2Router, {
+  prefix: "/thisvid2"
+});
+app.register(fileRouter, {
+  prefix: "/cta",
+  dirName: config.catDir
+});
+app.register(fileRouter, {
+  prefix: "/meme",
+  dirName: config.memeDir
+});
+app.register(fileRouter, {
+  prefix: "/bird",
+  dirName: config.birdDir
+});
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+/*app.use((req, res, next) => {
   next(createError(404));
-});
+});*/
 
 // error handler
-app.use(function(err, req, res) {
+/*app.setErrorHandler((err, req, res) => {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  //res.locals.message = err.message;
+  //res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render("error");
-});
+  res.status(err.statusCode || 500);
+  //res.render("error");
+});*/
 
-export default app;
+const start = async () => {
+  try {
+    await app.listen({ port: Number(process.env.PORT) || 3000 });
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+};
+start();

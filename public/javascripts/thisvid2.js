@@ -2,7 +2,7 @@ var statusElement = document.getElementById("status");
 function upload(file) {
   if (file.size > 26214400) return statusElement.innerHTML = "That file is over 25MB!";
   var fd = new window.FormData();
-  fd.append("video", file);
+  fd.append("file", file);
   statusElement.innerHTML = "Generating...";
   window.fetch("/thisvid2/upload", {
     method: "post",

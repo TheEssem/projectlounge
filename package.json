@@ -2,26 +2,23 @@
   "name": "utils",
   "version": "0.0.0",
   "scripts": {
-    "start": "node ./bin/www.js"
+    "start": "node app.js"
   },
   "type": "module",
   "dependencies": {
-    "debug": "^4.3.4",
-    "express": "^4.18.2",
-    "file-type": "^17.1.1",
-    "fluent-ffmpeg": "^2.1.2",
-    "helmet": "^3.22.0",
-    "http-errors": "~1.6.3",
-    "morgan": "~1.9.1",
-    "multer": "^1.4.5-lts.1",
-    "serve-index": "^1.9.1"
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/multipart": "^8.3.0",
+    "@fastify/static": "^7.0.4",
+    "fastify": "^4.28.1",
+    "file-type": "^17.1.6",
+    "fluent-ffmpeg": "github:alexger/node-fluent-ffmpeg#ffmpeg7-formats-fix"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.13.8",
-    "@babel/eslint-plugin": "^7.13.0",
-    "eslint": "^8.2.0",
-    "eslint-plugin-unicorn": "^41.0.0",
-    "prettier": "^2.6.2",
-    "prettier-eslint": "^14.0.2"
+    "@babel/eslint-parser": "^7.24.8",
+    "@babel/eslint-plugin": "^7.24.7",
+    "eslint": "^8.57.0",
+    "eslint-plugin-unicorn": "^41.0.1",
+    "prettier": "^2.8.8",
+    "prettier-eslint": "^14.1.0"
   }
 }

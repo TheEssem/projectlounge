@@ -21,7 +21,7 @@ export default (options) => {
         }
       });
     }
-    const outputStream = new PassThrough();
+    const outputStream = new PassThrough().setDefaultEncoding("binary");
     ffmpeg.ffprobe(options.buffer ? probeStream : options.file, (error, metadata) => {
       if (error) reject(error);
       const duration = parseInt(metadata.format.duration) >= 15 ? 15 : metadata.format.duration;
@@ -150,8 +150,9 @@ export default (options) => {
       ffmpeg(options.buffer ? inputStream : options.file).input(`${path.dirname(url.fileURLToPath(import.meta.url))}/assets/outro.mp4`).duration(duration + 5).videoBitrate(150).fps(5).input("anullsrc").inputFormat("lavfi").audioChannels(1).audioBitrate(8).complexFilter(filters, ["v", "a"]).format("ismv").on("error", (error, stdout, stderr) => {
         console.error(stderr);
         reject(error);
+      }).on("end", () => {
+        resolve(outputStream);
       }).output(outputStream, { end: true }).run();
-      resolve(outputStream);
     });
   });
 };

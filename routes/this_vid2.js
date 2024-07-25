@@ -1,63 +1,113 @@
-import { Router } from "express";
-import multer, { diskStorage } from "multer";
-import { extname, join, dirname } from "path";
-import url from "url";
-var storage = diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, "/tmp/");
-  },
-  filename: function(req, file, cb) {
-    cb(null, Date.now() + extname(file.originalname)); // Appending extension
-  },
-});
+import { extname, join, dirname } from "node:path";
+import url from "node:url";
+import { createWriteStream } from "node:fs";
+import { pipeline } from "node:stream/promises";
 import generateVideo from "../generateVideo.js";
 import { fileTypeFromFile } from "file-type";
-var upload = multer({ storage: storage });
-var router = Router();
 
-var outMap = new Map();
+class Cache extends Map {
+  constructor(values) {
+    super(values);
+    this.maxValues = 2048;
+  }
 
-router.get("/", function(req, res) {
-  res.sendFile(join(`${dirname(url.fileURLToPath(import.meta.url))}/../views/this_vid2.html`));
-  //res.render("this_vid2", { title: "this_vid2: Web Edition" });
-});
+  set(key, value) {
+    super.set(key, value);
+    if (this.size > this.maxValues) this.delete(this.keys().next().value);
+    setTimeout(() => {
+      if (super.has(key) && this.get(key) === value && value.data) super.delete(key);
+    }, 300000); // delete jobs if not requested after 5 minutes
+    return this;
+  }
+}
 
-router.post("/upload", upload.single("video"), async function(req, res) {
-  try {
-    const type = await fileTypeFromFile(req.file.path);
-    if (!type.mime.includes("video")) {
-      res.status(400);
-      return res.json({
-        data: null,
-        error: "The uploaded file is not a video.",
-      });
+/**
+ * @param {import("fastify").FastifyInstance} fastify
+ */
+export default async function(fastify) {
+  const outMap = new Cache();
+
+  fastify.get("/", (req, res) => {
+    res.sendFile("this_vid2.html", join(`${dirname(url.fileURLToPath(import.meta.url))}/../views`));
+  });
+  
+  fastify.post("/upload", {
+    schema: {
+      consumes: ["multipart/form-data"],
+      response: {
+        default: {
+          type: "object",
+          properties: {
+            error: {
+              type: "string",
+              default: true
+            }
+          }
+        },
+        "2xx": {
+          type: "object",
+          properties: {
+            data: { type: "string" }
+          }
+        }
+      }
     }
-    var id = Math.random().toString(36).substring(2, 15);
-    //var filename = await generateVideo(req.file.path, id);
-    var stream = await generateVideo({ file: req.file.path });
-    outMap.set(id, stream);
-    res.json({
-      data: `/thisvid2/video/${id}`,
-      error: null,
-    });
-  } catch (err) {
-    res.status(500);
-    return res.json({ data: null, error: err });
-  }
-});
-
-router.get("/video/:id", async function(req, res, next) {
-  try {
-    var stream = outMap.get(req.params.id);
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=\"this_vid2.mp4\""
-    );
-    return stream.pipe(res);
-  } catch (e) {
-    res.status(404);
-    next();
-  }
-});
-
-export default router;
+  }, async (req, res) => {
+    try {
+      const data = await req.file();
+      if (!data) {
+        res.status(400);
+        return {
+          data: null,
+          error: "No file was uploaded.",
+        };
+      }
+      const outname = `/tmp/${Date.now()}${extname(data.filename)}`;
+      await pipeline(data.file, createWriteStream(outname));
+      const type = await fileTypeFromFile(outname);
+      if (!type.mime.includes("video")) {
+        res.status(400);
+        return {
+          data: null,
+          error: "The uploaded file is not a video.",
+        };
+      }
+      const id = Math.random().toString(36).substring(2, 15);
+      const stream = await generateVideo({ file: outname });
+      outMap.set(id, stream);
+      return {
+        data: `/thisvid2/video/${id}`,
+        error: null,
+      };
+    } catch (err) {
+      fastify.log.error(err);
+      res.status(500);
+      return { data: null, error: err };
+    }
+  });
+  
+  fastify.get("/video/:id", {
+    schema: {
+      params: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string"
+          }
+        }
+      }
+    }
+  }, async (req, res) => {
+    try {
+      const stream = outMap.get(req.params.id);
+      res.header(
+        "Content-Disposition",
+        "attachment; filename=\"this_vid2.mp4\""
+      );
+      return res.send(stream);
+    } catch (e) {
+      fastify.log.error(e);
+      res.status(404);
+    }
+  });
+}
