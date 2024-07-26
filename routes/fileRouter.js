@@ -9,7 +9,7 @@ export default async function(fastify, options) {
   const files = dir.filter((e) => e.match(/.*\.(png|gif|jpg|jpeg|webp)/ig));
 
   fastify.get("/", (req, res) => {
-    res.redirect(`${options.prefix}/files/${files[Math.floor(Math.random() * files.length)]}`, 302);
+    res.redirect(`${options.prefix}/files/${encodeURIComponent(files[Math.floor(Math.random() * files.length)])}`, 302);
   });
 
   fastify.register(fastifyStatic, {
