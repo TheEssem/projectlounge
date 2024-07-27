@@ -7,8 +7,6 @@ import { join, dirname } from "node:path";
 import url from "node:url";
 
 import config from "./config.js";
-
-import thisvid2Router from "./routes/this_vid2.js";
 import fileRouter from "./routes/fileRouter.js";
 
 const app = Fastify({
@@ -26,9 +24,6 @@ app.register(fastifyMultipart, {
   }
 });
 
-app.register(thisvid2Router, {
-  prefix: "/thisvid2"
-});
 app.register(fileRouter, {
   prefix: "/cta",
   dirName: config.catDir
