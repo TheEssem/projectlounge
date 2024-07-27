@@ -1,7 +1,6 @@
 import Fastify from "fastify";
 import fastifyStatic from "@fastify/static";
 import helmet from "@fastify/helmet";
-import fastifyMultipart from "@fastify/multipart";
 
 import { join, dirname } from "node:path";
 import url from "node:url";
@@ -16,12 +15,6 @@ const app = Fastify({
 app.register(helmet, { contentSecurityPolicy: false });
 app.register(fastifyStatic, {
   root: join(dirname(url.fileURLToPath(import.meta.url)), "public")
-});
-app.register(fastifyMultipart, {
-  limits: {
-    files: 1,
-    fileSize: 26214400
-  }
 });
 
 app.register(fileRouter, {
